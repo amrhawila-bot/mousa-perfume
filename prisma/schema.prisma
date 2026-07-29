@@ -1,0 +1,104 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Admin {
+  id       String @id @default(uuid())
+  email    String @unique
+  password String
+  name     String
+}
+
+model Category {
+  id       String    @id @default(uuid())
+  nameAr   String
+  nameEn   String
+  slug     String    @unique
+  products Product[]
+  createdAt DateTime @default(now())
+}
+
+model Product {
+  id            String       @id @default(uuid())
+  nameAr        String
+  nameEn        String
+  description   String
+  brand         String
+  categoryId    String
+  category      Category     @relation(fields: [categoryId], references: [id])
+  price         Float
+  oldPrice      Float?
+  image         String       @default("/placeholder.svg")
+  stock         Int          @default(0)
+  gender        String       @default("unisex")
+  concentration String       @default("Eau de Parfum")
+  size          String       @default("100ml")
+  featured      Boolean      @default(false)
+  hidden        Boolean      @default(false)
+  createdAt     DateTime     @default(now())
+  orderItems    OrderItem[]
+  wishlists     Wishlist[]
+  reviews       Review[]
+}
+
+model Customer {
+  id           String     @id @default(uuid())
+  name         String
+  email        String     @unique
+  password     String
+  phone        String?
+  address      String?
+  createdAt    DateTime   @default(now())
+  orders       Order[]
+  wishlists    Wishlist[]
+  reviews      Review[]
+}
+
+model Order {
+  id         String      @id @default(uuid())
+  customerId String
+  customer   Customer    @relation(fields: [customerId], references: [id])
+  items      OrderItem[]
+  total      Float
+  status     String      @default("pending")
+  address    String
+  phone      String
+  createdAt  DateTime    @default(now())
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  order     Order   @relation(fields: [orderId], references: [id])
+  productId String
+  product   Product @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+}
+
+model Wishlist {
+  id        String   @id @default(uuid())
+  customerId String
+  customer  Customer @relation(fields: [customerId], references: [id])
+  productId String
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+
+  @@unique([customerId, productId])
+}
+
+model Review {
+  id         String   @id @default(uuid())
+  customerId String
+  customer   Customer @relation(fields: [customerId], references: [id])
+  productId  String
+  product    Product  @relation(fields: [productId], references: [id])
+  rating     Int
+  text       String
+  createdAt  DateTime @default(now())
+}
