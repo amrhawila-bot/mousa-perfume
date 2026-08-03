@@ -11,6 +11,7 @@ const links = [
   { href: "/admin/categories", label: "التصنيفات", icon: "📁" },
   { href: "/admin/orders", label: "الطلبات", icon: "📦" },
   { href: "/admin/customers", label: "العملاء", icon: "👥" },
+  { href: "/admin/settings", label: "إعدادات الحساب", icon: "⚙️" },
 ];
 
 export default function AdminSidebar() {

@@ -2,7 +2,12 @@
 
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, verifyPassword, createToken } from "@/lib/auth";
+import {
+  hashPassword,
+  verifyPassword,
+  createToken,
+  getAdminSession,
+} from "@/lib/auth";
 import { revalidatePath } from "next/cache";
 
 export async function adminLogin(email: string, password: string) {
@@ -29,6 +34,44 @@ export async function adminLogout() {
   const cookieStore = await cookies();
   cookieStore.delete("admin_token");
   revalidatePath("/admin/login");
+}
+
+export async function adminUpdateAccount(input: {
+  name: string;
+  email: string;
+  currentPassword: string;
+  newPassword: string;
+  confirmPassword: string;
+}) {
+  const session = await getAdminSession();
+  if (!session) return { error: "غير مصرح، سجل الدخول أولاً" };
+
+  if (input.newPassword !== input.confirmPassword) {
+    return { error: "كلمة المرور الجديدة وتأكيدها غير متطابقتين" };
+  }
+  if (input.newPassword.length < 8) {
+    return { error: "كلمة المرور الجديدة يجب ألا تقل عن 8 أحرف" };
+  }
+
+  const admin = await prisma.admin.findUnique({ where: { id: session.id } });
+  if (!admin) return { error: "المدير غير موجود" };
+
+  const valid = await verifyPassword(input.currentPassword, admin.password);
+  if (!valid) return { error: "كلمة المرور الحالية غير صحيحة" };
+
+  const hashed = await hashPassword(input.newPassword);
+
+  await prisma.admin.update({
+    where: { id: admin.id },
+    data: {
+      name: input.name,
+      email: input.email,
+      password: hashed,
+    },
+  });
+
+  revalidatePath("/admin/settings");
+  return { success: true };
 }
 
 export async function customerRegister(
