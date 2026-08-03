@@ -7,11 +7,11 @@ import { useState } from "react";
 
 const links = [
   { href: "/admin", label: "لوحة التحكم", icon: "📊" },
+  { href: "/admin/settings", label: "إعدادات الحساب", icon: "⚙️" },
   { href: "/admin/products", label: "المنتجات", icon: "🧴" },
   { href: "/admin/categories", label: "التصنيفات", icon: "📁" },
   { href: "/admin/orders", label: "الطلبات", icon: "📦" },
   { href: "/admin/customers", label: "العملاء", icon: "👥" },
-  { href: "/admin/settings", label: "إعدادات الحساب", icon: "⚙️" },
 ];
 
 export default function AdminSidebar() {
