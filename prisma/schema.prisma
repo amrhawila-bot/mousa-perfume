@@ -24,26 +24,35 @@ model Category {
 }
 
 model Product {
-  id            String       @id @default(uuid())
+  id            String         @id @default(uuid())
   nameAr        String
   nameEn        String
   description   String
   brand         String
   categoryId    String
-  category      Category     @relation(fields: [categoryId], references: [id])
+  category      Category       @relation(fields: [categoryId], references: [id])
   price         Float
   oldPrice      Float?
-  image         String       @default("/placeholder.svg")
-  stock         Int          @default(0)
-  gender        String       @default("unisex")
-  concentration String       @default("Eau de Parfum")
-  size          String       @default("100ml")
-  featured      Boolean      @default(false)
-  hidden        Boolean      @default(false)
-  createdAt     DateTime     @default(now())
+  image         String         @default("/placeholder.svg")
+  images        ProductImage[]
+  stock         Int            @default(0)
+  gender        String         @default("unisex")
+  concentration String         @default("Eau de Parfum")
+  size          String         @default("100ml")
+  featured      Boolean        @default(false)
+  hidden        Boolean        @default(false)
+  createdAt     DateTime       @default(now())
   orderItems    OrderItem[]
   wishlists     Wishlist[]
   reviews       Review[]
+}
+
+model ProductImage {
+  id        String   @id @default(uuid())
+  productId String
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
 }
 
 model Customer {

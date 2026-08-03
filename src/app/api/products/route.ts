@@ -15,6 +15,7 @@ const productSelect = {
   concentration: true,
   size: true,
   featured: true,
+  images: { select: { id: true, url: true } },
   category: { select: { nameAr: true, slug: true } },
 } as const;
 

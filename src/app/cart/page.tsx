@@ -77,10 +77,12 @@ export default function CartPage() {
                 layout
                 className="glassmorphism rounded-2xl p-6 border border-white/5 flex items-center gap-6"
               >
-                <div className="w-20 h-20 rounded-xl bg-gradient-to-br from-gold/5 to-gold/10 flex items-center justify-center shrink-0">
-                  <span className="text-gold text-2xl font-bold">
-                    {item.name.charAt(0)}
-                  </span>
+                <div className="w-20 h-20 rounded-xl overflow-hidden border border-white/10 bg-white/5 shrink-0">
+                  <img
+                    src={item.image || "/placeholder.svg"}
+                    alt={item.name}
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <div className="flex-1">
                   <h3 className="text-white font-semibold">{item.name}</h3>

@@ -57,12 +57,12 @@ const ProductCard = memo(function ProductCard({
     >
       <div className="glassmorphism rounded-2xl overflow-hidden border border-white/5 hover:border-gold/20 transition-all duration-500">
         <Link href={`/products/${product.id}`}>
-          <div className="h-64 bg-gradient-to-br from-gold/5 to-gold/10 flex items-center justify-center p-8">
-            <div className="w-24 h-24 rounded-full border-2 border-gold/30 flex items-center justify-center">
-              <span className="text-gold text-3xl font-bold">
-                {product.nameAr.charAt(0)}
-              </span>
-            </div>
+          <div className="h-64 bg-gradient-to-br from-gold/5 to-gold/10 overflow-hidden">
+            <img
+              src={product.image || "/placeholder.svg"}
+              alt={product.nameAr}
+              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            />
           </div>
         </Link>
         <div className="p-6">

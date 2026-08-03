@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, memo } from "react";
+import { useEffect, useState, useCallback, useMemo, memo } from "react";
 import { useParams } from "next/navigation";
 import { motion } from "framer-motion";
 import Link from "next/link";
@@ -16,6 +16,7 @@ interface Product {
   price: number;
   oldPrice: number | null;
   image: string;
+  images: { id: string; url: string }[];
   brand: string;
   stock: number;
   gender: string;
@@ -30,6 +31,17 @@ function ProductDetail() {
   const [related, setRelated] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [quantity, setQuantity] = useState(1);
+  const [activeImage, setActiveImage] = useState("");
+
+  const galleryImages = useMemo(() => {
+    const list = (product?.images || []).map((img: any) => img.url);
+    if (list.length) return list;
+    return product?.image ? [product.image] : ["/placeholder.svg"];
+  }, [product]);
+
+  useEffect(() => {
+    if (product) setActiveImage(galleryImages[0]);
+  }, [product, galleryImages]);
   const addItem = useCart((s) => s.addItem);
   const wishlist = useWishlist();
 
@@ -102,13 +114,38 @@ function ProductDetail() {
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
-            className="glassmorphism rounded-3xl p-12 lg:p-16 flex items-center justify-center border border-white/5"
+            className="glassmorphism rounded-3xl p-8 lg:p-10 flex flex-col items-center justify-center border border-white/5"
           >
-            <div className="w-48 h-48 lg:w-64 lg:h-64 rounded-full border-2 border-gold/20 flex items-center justify-center">
-              <span className="text-gold text-6xl lg:text-8xl font-bold">
-                {product.nameAr.charAt(0)}
-              </span>
+            <div className="w-64 h-64 lg:w-80 lg:h-80 rounded-2xl overflow-hidden border border-white/10 bg-white/5 flex items-center justify-center mb-4">
+              <img
+                src={activeImage || "/placeholder.svg"}
+                alt={product.nameAr}
+                className="w-full h-full object-cover"
+              />
             </div>
+            {galleryImages.length > 1 && (
+              <div className="flex gap-3">
+                {galleryImages.map((url) => (
+                  <button
+                    key={url}
+                    type="button"
+                    onClick={() => setActiveImage(url)}
+                    className={`w-16 h-16 rounded-xl overflow-hidden border-2 transition-all ${
+                      activeImage === url
+                        ? "border-gold"
+                        : "border-white/10 opacity-60 hover:opacity-100"
+                    }`}
+                    aria-label="صورة المنتج"
+                  >
+                    <img
+                      src={url}
+                      alt="صورة المنتج"
+                      className="w-full h-full object-cover"
+                    />
+                  </button>
+                ))}
+              </div>
+            )}
           </motion.div>
 
           <motion.div
@@ -242,10 +279,12 @@ function ProductDetail() {
                   href={`/products/${rp.id}`}
                   className="glassmorphism rounded-2xl p-6 border border-white/5 hover:border-gold/20 transition-all duration-500 group"
                 >
-                  <div className="w-12 h-12 rounded-full border border-gold/20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-gold text-lg font-bold">
-                      {rp.nameAr.charAt(0)}
-                    </span>
+                  <div className="w-16 h-16 rounded-xl overflow-hidden border border-white/10 mx-auto mb-4">
+                    <img
+                      src={rp.image || "/placeholder.svg"}
+                      alt={rp.nameAr}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <h3 className="text-white font-semibold text-center mb-1 group-hover:text-gold transition-colors">
                     {rp.nameAr}

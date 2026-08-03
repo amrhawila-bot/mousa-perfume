@@ -52,8 +52,12 @@ export default function WishlistPage() {
             product && !product.error ? (
               <div key={product.id} className="glassmorphism rounded-2xl p-6 border border-white/5 hover:border-gold/20 transition-all">
                 <Link href={`/products/${product.id}`}>
-                  <div className="w-16 h-16 rounded-full border border-gold/20 flex items-center justify-center mx-auto mb-4">
-                    <span className="text-gold text-xl font-bold">{product.nameAr.charAt(0)}</span>
+                  <div className="w-20 h-20 rounded-xl overflow-hidden border border-white/10 mx-auto mb-4">
+                    <img
+                      src={product.image || "/placeholder.svg"}
+                      alt={product.nameAr}
+                      className="w-full h-full object-cover"
+                    />
                   </div>
                   <h3 className="text-white font-semibold text-center mb-1">{product.nameAr}</h3>
                 </Link>
